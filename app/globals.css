@@ -24,3 +24,52 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.task-item {
+  width: 90%;
+  max-width: 1000px;
+  min-height: 70px;
+
+  margin: 5px auto;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 20px;
+
+  background-color: #333333;
+
+  border-radius: 5px;
+
+  box-sizing: border-box;
+
+  color: white;
+}
+
+.task-item input {
+  width: 24px;
+  height: 24px;
+
+  margin-right: 10px;
+}
+
+.completed {
+  text-decoration: line-through;
+}
+
+.delete-button {
+  margin-left: auto;
+
+  border: none;
+  background: transparent;
+
+  color: white;
+
+  font-size: 20px;
+
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  color: red;
+}
