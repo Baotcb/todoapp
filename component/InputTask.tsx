@@ -1,41 +1,49 @@
 "use client";
-import React from "react";
-import { useState } from "react";
-interface AddTask {
-    onAddTask: (title: string) => void;
+
+import { useState, type FormEvent } from "react";
+
+interface InputTaskProps {
+  onAddTask: (title: string) => void | Promise<void>;
+  disabled?: boolean;
 }
 
+export default function InputTask({
+  onAddTask,
+  disabled = false,
+}: InputTaskProps) {
+  const [title, setTitle] = useState("");
 
-export default function InputTask({ onAddTask }: AddTask) {
-    const [title, setTitle] = useState("");
-    function handleSubmit() {
-        if (title.trim() !== "") {
-            onAddTask(title);
-            setTitle("");
-        }
-    }
-    function handlePressEnter(event: React.KeyboardEvent<HTMLInputElement>) {
-        if (event.key === "Enter") {
-            handleSubmit();
-        }
-    }
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const trimmedTitle = title.trim();
 
-    return (
-        <div className="add-task" style={{ marginLeft: '340px ' }}>
-            <span className="add-icon">+</span>
+    if (!trimmedTitle || disabled) return;
 
-            <input
-                type="text"
-                placeholder="Add a task" className="task-input"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                onKeyDown={handlePressEnter}
-            />
+    void onAddTask(trimmedTitle);
+    setTitle("");
+  }
 
-            <button onClick={handleSubmit} >
-                ➡️
-            </button>
-        </div>
-    )
-
+  return (
+    <form className="add-task-form" onSubmit={handleSubmit}>
+      <span className="add-task-symbol" aria-hidden="true">
+        +
+      </span>
+      <input
+        className="task-input"
+        type="text"
+        placeholder="Ví dụ: Hoàn thành báo cáo..."
+        value={title}
+        onChange={(event) => setTitle(event.target.value)}
+        aria-label="Tên công việc mới"
+        maxLength={200}
+      />
+      <button
+        className="add-task-button"
+        type="submit"
+        disabled={disabled || !title.trim()}
+      >
+        Thêm việc
+      </button>
+    </form>
+  );
 }
