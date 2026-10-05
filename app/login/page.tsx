@@ -109,6 +109,20 @@ export default function LoginPage() {
             {loading ? "Đang đăng nhập..." : "Đăng nhập"}
           </button>
         </form>
+        <div className="login-divider">
+          <span>Hoặc đăng nhập với</span>
+        </div>
+        <button
+          className="btn btn-outline-secondary w-100 mezon-login-button"
+          type="button"
+          onClick={() => {
+            window.location.href =
+              `${process.env.NEXT_PUBLIC_API_URL}/auth/mezon`;
+          }}
+        >
+
+          <span>Tiếp tục với Mezon</span>
+        </button>
 
         <Link className="login-back" href="/">
           ← Quay lại danh sách công việc

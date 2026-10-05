@@ -1,6 +1,16 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
+  const router = useRouter();
+
+  function handleLogout() {
+    localStorage.clear();
+    router.replace("/login");
+  }
+
   return (
     <header className="app-header">
       <div className="container app-navbar d-flex align-items-center justify-content-between">
@@ -16,6 +26,13 @@ export default function Header() {
           <span className="nav-avatar" aria-label="Tài khoản của bạn">
             TF
           </span>
+          <button
+            className="logout-button"
+            type="button"
+            onClick={handleLogout}
+          >
+            Đăng xuất
+          </button>
         </div>
       </div>
     </header>
