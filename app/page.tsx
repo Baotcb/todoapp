@@ -6,7 +6,6 @@ import Header from "@/component/Header";
 import InputTask from "@/component/InputTask";
 import TaskList from "@/component/TaskList";
 import { apiFetch } from "@/lib/api";
-import router from "next/router";
 import { useRouter } from "next/navigation";
 
 interface Task {

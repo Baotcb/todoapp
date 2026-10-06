@@ -84,6 +84,22 @@ input {
   font-weight: 700;
 }
 
+.logout-button {
+  padding: 8px 13px;
+  border: 1px solid #dce3f0;
+  border-radius: 10px;
+  background: #fff;
+  color: #34435d;
+  font-size: 0.85rem;
+  font-weight: 650;
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.logout-button:hover {
+  border-color: #c8d1e0;
+  background: #f7f8fb;
+}
+
 .app-container {
   max-width: 1100px;
   padding-top: 48px;
@@ -530,6 +546,52 @@ input {
   cursor: wait;
   opacity: 0.7;
 }
+
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0 14px;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.login-divider::before,
+.login-divider::after {
+  height: 1px;
+  flex: 1;
+  background: var(--line);
+  content: "";
+}
+
+.mezon-login-button {
+  display: inline-flex;
+  min-height: 49px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-color: #dce3f0;
+  border-radius: 12px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 650;
+  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+
+.mezon-login-button:hover {
+  transform: translateY(-1px);
+  border-color: #b9c5dc;
+  background: #f8f9fc;
+  color: var(--ink);
+}
+
+.mezon-login-button:focus-visible {
+  border-color: #9dadff;
+  box-shadow: 0 0 0 4px rgba(79, 109, 245, 0.12);
+}
+
+
 
 .login-back {
   display: block;
