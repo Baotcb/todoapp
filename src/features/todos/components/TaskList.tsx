@@ -1,20 +1,14 @@
-import type { Task } from "../types/task";
+import type { Task, TaskListProps } from "../types/task";
 import TaskItem from "./TaskItem";
 
-interface TaskListProps {
-  title: string;
-  subtitle: string;
-  tasks: Task[];
-  emptyMessage: string;
-  onToggle: (id: number) => void;
-  onDelete: (id: number) => void;
-}
+
 
 export default function TaskList({
   title,
   subtitle,
   tasks,
   emptyMessage,
+  isTaskBusy,
   onToggle,
   onDelete,
 }: TaskListProps) {
@@ -38,6 +32,7 @@ export default function TaskList({
               id={task.id}
               title={task.title}
               completed={task.completed}
+              disabled={isTaskBusy ? isTaskBusy(task.id) : false}
               onToggle={onToggle}
               onDelete={onDelete}
             />

@@ -8,7 +8,9 @@ export default function Home() {
         tasks,
         pendingTasks,
         completedTasks,
-        loading,
+        isInitialLoading,
+        isAdding,
+        isTaskBusy,
         error,
         addTask,
         toggleTask,
@@ -33,7 +35,7 @@ export default function Home() {
                         <h2>Việc gì đang ở trong đầu bạn?</h2>
                         <p>Ghi lại để tập trung vào điều quan trọng tiếp theo.</p>
                     </div>
-                    <InputTask onAddTask={addTask} disabled={loading} />
+                    <InputTask onAddTask={addTask} disabled={isAdding} />
                 </section>
 
                 {error && (
@@ -56,6 +58,7 @@ export default function Home() {
                         subtitle="Từng bước một, bạn sẽ làm được."
                         tasks={pendingTasks}
                         emptyMessage="Bạn đã hoàn thành mọi việc. Tuyệt vời!"
+                        isTaskBusy={isTaskBusy}
                         onToggle={toggleTask}
                         onDelete={removeTask}
                     />
@@ -64,12 +67,13 @@ export default function Home() {
                         subtitle="Nhìn lại những gì bạn đã làm được."
                         tasks={completedTasks}
                         emptyMessage="Các công việc đã xong sẽ xuất hiện ở đây."
+                        isTaskBusy={isTaskBusy}
                         onToggle={toggleTask}
                         onDelete={removeTask}
                     />
                 </div>
 
-                {loading && (
+                {isInitialLoading && (
                     <div className="loading-indicator" role="status">
                         <span className="spinner-border spinner-border-sm" aria-hidden="true" />
                         <span>Đang cập nhật...</span>

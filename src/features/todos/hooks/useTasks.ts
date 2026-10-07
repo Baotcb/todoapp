@@ -7,16 +7,21 @@ function getErrorMessage(error: unknown, fallback: string) {
   return error instanceof Error ? error.message : fallback;
 }
 
+
 export function useTasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
+  const [busyTaskIds, setBusyTaskIds] = useState<number[]>([]);
   const [error, setError] = useState("");
+
+  const isTaskBusy = (id: number) => busyTaskIds.includes(id);
 
   const router = useRouter();
 
   useEffect(() => {
     async function loadTasks() {
-      setLoading(true);
+      setIsInitialLoading(true);
       setError("");
 
       try {
@@ -25,33 +30,38 @@ export function useTasks() {
       } catch (loadError) {
         setError(getErrorMessage(loadError, "Không thể tải danh sách công việc."));
       } finally {
-        setLoading(false);
+        setIsInitialLoading(false);
       }
     }
 
     void loadTasks();
   }, [router]);
 
-  async function addTask(title: string) {
+  async function addTask(title: string): Promise<boolean> {
     setError("");
-    setLoading(true);
+    setIsAdding(true);
 
     try {
       const createdTask = await todoApi.createTask(title);
       setTasks((prev) => [createdTask, ...prev]);
+      return true;
     } catch (createError) {
       setError(getErrorMessage(createError, "Không thể thêm công việc."));
+      return false;
     } finally {
-      setLoading(false);
+      setIsAdding(false);
     }
+
   }
 
   async function toggleTask(id: number) {
+    if (busyTaskIds.includes(id)) return;
+
     const task = tasks.find((t) => t.id === id);
     if (!task) return;
 
     setError("");
-    setLoading(true);
+    setBusyTaskIds((prev) => [...prev, id]);
 
     try {
       const updatedTask = await todoApi.updateTask(id, !task.completed);
@@ -61,13 +71,14 @@ export function useTasks() {
     } catch (updateError) {
       setError(getErrorMessage(updateError, "Không thể cập nhật công việc."));
     } finally {
-      setLoading(false);
+      setBusyTaskIds((prev) => prev.filter((taskId) => taskId !== id));
     }
   }
 
   async function removeTask(id: number) {
+    if (busyTaskIds.includes(id)) return;
     setError("");
-    setLoading(true);
+    setBusyTaskIds((prev) => [...prev, id]);
 
     try {
       await todoApi.deleteTask(id);
@@ -75,7 +86,7 @@ export function useTasks() {
     } catch (deleteError) {
       setError(getErrorMessage(deleteError, "Không thể xóa công việc."));
     } finally {
-      setLoading(false);
+      setBusyTaskIds((prev) => prev.filter((taskId) => taskId !== id));
     }
   }
 
@@ -90,7 +101,9 @@ export function useTasks() {
     tasks,
     pendingTasks,
     completedTasks,
-    loading,
+    isInitialLoading,
+    isAdding,
+    isTaskBusy,
     error,
     addTask,
     toggleTask,

@@ -1,11 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-
-interface InputTaskProps {
-  onAddTask: (title: string) => void | Promise<void>;
-  disabled?: boolean;
-}
+import { InputTaskProps } from "../types/task";
 
 export default function InputTask({
   onAddTask,
@@ -13,14 +9,15 @@ export default function InputTask({
 }: InputTaskProps) {
   const [title, setTitle] = useState("");
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const trimmedTitle = title.trim();
 
     if (!trimmedTitle || disabled) return;
-
-    void onAddTask(trimmedTitle);
-    setTitle("");
+    const isSuccess = await onAddTask(trimmedTitle);
+    if (isSuccess) {
+      setTitle("");
+    }
   }
 
   return (
