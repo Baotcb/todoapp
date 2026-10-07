@@ -1,3 +1,5 @@
+import type { Task } from "../types/task";
+
 interface TaskItemProps {
   id: number;
   title: string;

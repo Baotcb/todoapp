@@ -5,9 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/api";
 
-interface LoginResponse {
-  token?: string;
-}
+
 
 export default function LoginPage() {
   const router = useRouter();
@@ -120,7 +118,6 @@ export default function LoginPage() {
               `${process.env.NEXT_PUBLIC_API_URL}/auth/mezon`;
           }}
         >
-
           <span>Tiếp tục với Mezon</span>
         </button>
 

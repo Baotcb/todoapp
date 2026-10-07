@@ -1,3 +1,5 @@
+import type { Task } from "../types/task";
+
 interface ContentProps {
   totalTasks: number;
   pendingTasks: number;
