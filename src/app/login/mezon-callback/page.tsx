@@ -1,5 +1,6 @@
 "use client";
 
+import { setCookie } from "@/utils/cookie";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
@@ -16,7 +17,7 @@ export default function MezonSuccessPage() {
       return;
     }
 
-    localStorage.setItem("access_token", token);
+    setCookie("access_token", token, 1);
 
     router.replace("/");
   }, [router]);

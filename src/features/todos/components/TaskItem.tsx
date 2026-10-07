@@ -1,15 +1,12 @@
-interface TaskItemProps {
-  id: number;
-  title: string;
-  completed: boolean;
-  onToggle: (id: number) => void;
-  onDelete: (id: number) => void;
-}
+import type { TaskItemProps } from "../types/task";
+
+
 
 export default function TaskItem({
   id,
   title,
   completed,
+  disabled = false,
   onToggle,
   onDelete,
 }: TaskItemProps) {
@@ -19,6 +16,7 @@ export default function TaskItem({
         className="task-checkbox"
         type="checkbox"
         checked={completed}
+        disabled={disabled}
         onChange={() => onToggle(id)}
         aria-label={`Đánh dấu "${title}" ${completed ? "chưa hoàn thành" : "đã hoàn thành"}`}
       />
@@ -28,6 +26,7 @@ export default function TaskItem({
       <button
         className="delete-button"
         type="button"
+        disabled={disabled}
         onClick={() => onDelete(id)}
         aria-label={`Xóa công việc "${title}"`}
         title="Xóa công việc"

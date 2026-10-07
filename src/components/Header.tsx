@@ -1,5 +1,6 @@
 "use client";
 
+import { deleteCookie } from "@/utils/cookie";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -7,7 +8,7 @@ export default function Header() {
   const router = useRouter();
 
   function handleLogout() {
-    localStorage.clear();
+    deleteCookie("access_token");
     router.replace("/login");
   }
 

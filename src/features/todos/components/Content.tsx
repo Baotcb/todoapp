@@ -1,8 +1,4 @@
-interface ContentProps {
-  totalTasks: number;
-  pendingTasks: number;
-  completedTasks: number;
-}
+import { ContentProps } from '../types/content'
 
 export default function Content({
   totalTasks,

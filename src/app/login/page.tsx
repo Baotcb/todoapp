@@ -1,13 +1,12 @@
 "use client";
 
+import { getCookie, setCookie } from "@/utils/cookie";
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/api";
 
-interface LoginResponse {
-  token?: string;
-}
+
 
 export default function LoginPage() {
   const router = useRouter();
@@ -35,8 +34,8 @@ export default function LoginPage() {
       if (!data.token) {
         throw new Error("Phản hồi đăng nhập không có token.");
       }
-
-      localStorage.setItem("access_token", data.token);
+      setCookie("access_token", data.token, 1);
+      console.log(" Token của user : ", getCookie("access_token"));
       router.push("/");
     } catch (loginError) {
       setError(
@@ -120,7 +119,6 @@ export default function LoginPage() {
               `${process.env.NEXT_PUBLIC_API_URL}/auth/mezon`;
           }}
         >
-
           <span>Tiếp tục với Mezon</span>
         </button>
 
