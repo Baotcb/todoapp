@@ -15,13 +15,6 @@ export function useTasks() {
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
-
-    if (!token) {
-      router.replace("/login");
-      return;
-    }
-
     async function loadTasks() {
       setLoading(true);
       setError("");

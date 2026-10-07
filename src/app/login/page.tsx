@@ -1,5 +1,6 @@
 "use client";
 
+import { getCookie, setCookie } from "@/utils/cookie";
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -33,8 +34,8 @@ export default function LoginPage() {
       if (!data.token) {
         throw new Error("Phản hồi đăng nhập không có token.");
       }
-
-      localStorage.setItem("access_token", data.token);
+      setCookie("access_token", data.token, 1);
+      console.log(" Token của user : ", getCookie("access_token"));
       router.push("/");
     } catch (loginError) {
       setError(
