@@ -14,11 +14,16 @@ export function proxy(request: NextRequest) {
   const isExpired = token ? isTokenExpired(token) : true;
   const isValidAuth = !!token && !isExpired;
 
+  // if (isPublicRoute && !!token) {
+  //   return NextResponse.redirect(new URL("/login", request.url));
+  // }
+
   if (isProtectedRoute && !isValidAuth) {
     const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("redirect", `${pathname}${search}`);
+
 
     if (token && isExpired) {
+      loginUrl.searchParams.set("redirect", `${pathname}${search}`);
       loginUrl.searchParams.set("reason", "session-expired");
     }
 
