@@ -24,7 +24,7 @@ export interface TaskListProps {
 }
 
 export interface InputTaskProps {
-  onAddTask: (title: string) => boolean | void | Promise<void>;
+  onAddTask: (title: string) => Promise<boolean>;
   disabled?: boolean;
 }
 
