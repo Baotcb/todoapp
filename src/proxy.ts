@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { isTokenExpired } from "./utils/JwtToken";
 
 
 const PUBLIC_ROUTES = ["/login", "/login/mezon-callback"] as const;
@@ -14,10 +15,19 @@ export function proxy(request: NextRequest) {
   const isValidAuth = !!token && !isExpired;
 
   if (isProtectedRoute && !isValidAuth) {
-    const response = NextResponse.redirect(new URL(`/login?redirect=${pathname}${search}`, request.url));
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("redirect", `${pathname}${search}`);
+
+    if (token && isExpired) {
+      loginUrl.searchParams.set("reason", "session-expired");
+    }
+
+    const response = NextResponse.redirect(loginUrl);
+
     if (token && isExpired) {
       response.cookies.delete("access_token");
     }
+
     return response;
   }
 
@@ -30,39 +40,6 @@ export function proxy(request: NextRequest) {
 
   return NextResponse.next();
 }
-
-function isTokenExpired(token: string): boolean {
-  const payload = parseJwt(token);
-  if (!payload?.exp || typeof payload.exp !== "number") {
-    return true;
-  }
-  const currentTimestamp = Math.floor(Date.now() / 1000);
-
-
-  return payload.exp < currentTimestamp - 10;
-}
-
-
-
-function parseJwt(token: string): { exp?: number } | null {
-  try {
-    const base64Url = token.split(".")[1];
-    if (!base64Url) return null;
-    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-    const jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split("")
-        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-        .join("")
-    );
-    return JSON.parse(jsonPayload);
-  } catch {
-    return null;
-  }
-}
-
-
-
 
 
 export const config = {

@@ -1,7 +1,7 @@
 "use client";
 
 import { getCookie, setCookie } from "@/utils/cookie";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/api";
@@ -15,9 +15,29 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    const currentUrl = new URL(window.location.href);
+    const reason = currentUrl.searchParams.get("reason");
+
+    if (reason === "session-expired") {
+      setError("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+    }
+    if (reason) {
+      currentUrl.searchParams.delete("reason");
+      window.history.replaceState(
+        null,
+        "",
+        `${currentUrl.pathname}${currentUrl.search}${currentUrl.hash}`,
+      );
+    }
+  }, []);
+
+
+
   async function handleLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
+
 
     if (!email.trim() || !password) {
       setError("Vui lòng nhập email và mật khẩu.");
