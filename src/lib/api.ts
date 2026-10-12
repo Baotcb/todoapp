@@ -3,6 +3,11 @@ import { isTokenExpired } from "@/utils/JwtToken";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+type ApiEnvelope<T> = {
+    success: boolean;
+    data: T;
+};
+
 
 export async function apiFetch<T = unknown>(path: string, options: RequestInit = {}): Promise<T> {
     const token = getCookie("access_token");
@@ -27,11 +32,58 @@ export async function apiFetch<T = unknown>(path: string, options: RequestInit =
             },
         },
     );
-    if (!response.ok) {
-        throw new Error(`API Error: ${response.status}`);
+    if (response.status === 204) {
+        return undefined as T;
     }
+    const body: unknown = await response
+        .json()
+        .catch(() => null);
 
-    return response.json();
+    if (!response.ok) {
+        if (
+            response.status === 401 &&
+            !path.startsWith("/auth")
+        ) {
+            redirectToLogin();
+
+            throw new Error(
+                "Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại.",
+            );
+        }
+        let message = `API Error: ${response.status}`;
+        if (
+            body !== null &&
+            typeof body === "object" &&
+            "message" in body
+        ) {
+            const apiMessage = body.message;
+
+            if (typeof apiMessage === "string") {
+                message = apiMessage;
+            } else if (Array.isArray(apiMessage)) {
+                message = apiMessage.join(", ");
+            }
+        }
+
+        throw new Error(message);
+    }
+    if (
+        body !== null &&
+        typeof body === "object" &&
+        "success" in body &&
+        "data" in body
+    ) {
+        const envelope = body as ApiEnvelope<T>;
+
+        if (!envelope.success) {
+            throw new Error(
+                "API request không thành công.",
+            );
+        }
+
+        return envelope.data;
+    }
+    return body as T;
 }
 
 function redirectToLogin() {
